@@ -8,7 +8,7 @@ jobs:
     - name: Deploy Stage
       uses: fjogeleit/http-request-action@v1
       with:
-        url: 'https://a11ywatch-backend.public-sector-a11y.app.civicactions.net/api/scan''
+        url: 'https://a11ywatch-backend.public-sector-a11y.app.civicactions.net/api/scan'
         method: 'POST'
         customHeaders: '{"Content-Type": "application/json"}'
         data: '{"url": "https://civicactions.con"}'
