@@ -11,4 +11,4 @@ jobs:
         url: 'https://a11ywatch-backend.public-sector-a11y.app.civicactions.net/api/scan'
         method: 'POST'
         customHeaders: '{"Content-Type": "application/json"}'
-        data: '{"url": "https://civicactions.com"}
+        data: '{"url": "https://civicactions.com"}'
