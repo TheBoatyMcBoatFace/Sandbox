@@ -8,6 +8,6 @@ jobs:
           url: https://a11ywatch-backend.public-sector-a11y.app.civicactions.net/api/scan
           method: POST
           payload: '{"url": "https://civicactions.com"}'
-        run: |
-          $output = '${{ steps.webhook.outputs.output }}' | ConvertFrom-Json
-          Write-Host "Time from output $($output.time) statusCode $($output.statusCode) data $($output.data)"
+     #   run: |
+    #      $output = '${{ steps.webhook.outputs.output }}' | ConvertFrom-Json
+     #     Write-Host "Time from output $($output.time) statusCode $($output.statusCode) data $($output.data)"
