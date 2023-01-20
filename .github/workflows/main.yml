@@ -1,0 +1,16 @@
+jobs:
+  deployment:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deploy Stage
+      uses: fjogeleit/http-request-action@v1
+      with:
+        url: 'https://a11ywatch-backend.public-sector-a11y.app.civicactions.net/api/scan''
+        method: 'POST'
+        customHeaders: '{"Content-Type": "application/json"}'
+        data: '{"url": "https://civicactions.con"}'
+    - name: Show Response
+        run: |
+          echo ${{ steps.myRequest.outputs.response }}
+          echo ${{ steps.myRequest.outputs.headers }}
+       #   echo ${{ fromJson(steps.myRequest.outputs.response).field_you_want_to_access }}
