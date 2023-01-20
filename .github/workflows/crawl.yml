@@ -1,0 +1,16 @@
+on:
+  workflow_dispatch:
+
+jobs:
+  deployment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: http request
+        uses: satak/webrequest-action@master
+        with:
+          url: https://a11ywatch-backend.public-sector-a11y.app.civicactions.net/api/crawl
+          method: POST
+          payload: '{"url": "https://civicactions.com"}'
+     #   run: |
+    #      $output = '${{ steps.webhook.outputs.output }}' | ConvertFrom-Json
+     #     Write-Host "Time from output $($output.time) statusCode $($output.statusCode) data $($output.data)"
