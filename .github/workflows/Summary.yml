@@ -1,0 +1,45 @@
+name: Summarize Issue Text
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  summarize:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Get issue text
+      id: get_text
+      uses: actions/bin/filter@v1
+      with:
+        issues-event.body: ${{ toJson(github.event.issue) }}
+
+    - name: Format request body
+      id: format_body
+      run: echo '{"text":"${{ steps.get_text.outputs.body }}"}' > request_body.json
+
+    - name: Send request
+      id: send_request
+      run: curl -X POST -d @request_body.json https://webhook.site/614a1940-5507-403c-9bb0-aabc0c653654
+
+    - name: Get response
+      id: get_response
+      run: echo "The response is: ${{ steps.send_request.outputs.stdout }}"
+
+    - name: Add response as a comment
+      uses: actions/github-script@v3
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const result = context.payload.result
+          const response = context.payload.response
+
+          github.issues.createComment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.issue.number,
+            body: response
+          })
