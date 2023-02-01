@@ -9,11 +9,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Get issue text
-      id: get_text
-      uses: peter-murray/issue-body-parser-action@v2
+    - name: Get issue t
+      uses: actions/github-script@v3
       with:
-        issues-event.body: ${{ toJson(github.event.issue) }}
+        script: |
+          const issue = context.payload.issue;
+          const text = issue.body;
+          core.setOutput("text", text);
+
+
+
 
     - name: Format request body
       id: format_body
