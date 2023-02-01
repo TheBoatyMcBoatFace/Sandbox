@@ -24,11 +24,11 @@ jobs:
 
     - name: Send request
       id: send_request
-      run: curl -X POST -d @request_body.json https://webhook.site/614a1940-5507-403c-9bb0-aabc0c653654
+      run: curl -X POST -d @request_body.json https://webhook.site/a2d04d96-f9e7-4a46-84a9-6ab641f45226
 
     - name: Get response
       id: get_response
-      run: echo 'The response is: ${{ steps.send_request.outputs.stdout }}'
+      run: echo "${{ steps.send_request.outputs.stdout }}"
 
     - name: Add response as a comment
       uses: actions/github-script@v3
