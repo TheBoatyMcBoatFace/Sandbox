@@ -17,12 +17,9 @@ jobs:
           const text = issue.body;
           core.setOutput("text", text);
 
-
-
-
     - name: Format request body
       id: format_body
-      run: echo '{"text":"${{ steps.get_text.outputs.body }}"}' > request_body.json
+      run: echo '{/"text/": /"${{ steps.get_text.outputs.body }}/"}' > request_body.json
 
     - name: Send request
       id: send_request
