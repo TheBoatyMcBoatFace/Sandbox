@@ -26,10 +26,7 @@ jobs:
 
     - name: Send request
       id: send_request
-      run: curl -X POST -d @request_body.json https://webhook.site/614a1940-5507-403c-9bb0-aabc0c653654
-
-    - name: Get response
-      id: get_response
+      run: curl -X POST -d @request_body.json https://webhook.site/614a1940-5507-403c-9bb0-aat_response
       run: echo '${{ steps.send_request.outputs.stdout }}'
 
     - name: Add response as a comment
