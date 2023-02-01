@@ -11,7 +11,7 @@ jobs:
     steps:
     - name: Get issue text
       id: get_text
-      uses: actions/bin/filter@v1
+      uses: peter-murray/issue-body-parser-action@v2
       with:
         issues-event.body: ${{ toJson(github.event.issue) }}
 
