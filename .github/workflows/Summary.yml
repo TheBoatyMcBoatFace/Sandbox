@@ -25,7 +25,7 @@ jobs:
 
     - name: Get response
       id: get_response
-      run: echo "The response is: ${{ steps.send_request.outputs.stdout }}"
+      run: echo '${{ steps.send_request.outputs.stdout }}'
 
     - name: Add response as a comment
       uses: actions/github-script@v3
