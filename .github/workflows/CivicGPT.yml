@@ -15,6 +15,8 @@ on:
         type: string
 
   issues:
+      types:
+          - opened
 
 
 
@@ -66,14 +68,22 @@ jobs:
             response=$(curl -X POST https://api.openai.com/v1/completions \
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer ${{ secrets.OPENAI_API_KEY }}" \
-            -d '{"model": "text-davinci-003","prompt": "$prompty","temperature": 0.7,"max_tokens": 256,"top_p": 1,"frequency_penalty": 0,"presence_penalty": 0}')
+            -d '{
+                "model": "text-davinci-003",
+                "prompt": ${prompty},
+                "temperature": 0.7,
+                "max_tokens": 256,
+                "top_p": 1,
+                "frequency_penalty": 0,
+                "presence_penalty": 0
+                }')
                 echo "response: $response"
 
 
 #   Set response as output
       - name: 🎯Set Output
         id: set_output
-        run: echo "::set-output name=response::$response"
+        run: "::set-output name=response::${{ steps.api_request.outputs.response }}"
 
       - name: 💬Comment on Issue
         uses: actions-cool/issues-helper@v3
@@ -93,6 +103,7 @@ jobs:
             actions: 'add-labels'
             issue-number: ${{ github.event.issue.number }}
             labels: '✅ Done'
+            token: ${{ secrets.GH_TOKEN }}
 
       - name: Stop 🧑‍🍳 Cooking
         uses: actions-cool/issues-helper@v3
