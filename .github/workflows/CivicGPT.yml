@@ -79,7 +79,7 @@ jobs:
             customHeaders: '{"Content-Type": "application/json"}'
             data: '{
              "model": "text-davinci-003",
-             "prompt": "Create a tl;dr of the following text: ${{ steps.parse.output.text-to-summarize.text }},
+             "prompt": "Create a tl;dr of the following text: ${{ steps.parse.output.text-to-summarize.text }}",
              "temperature": 0.7,
              "max_tokens": 256,
              "top_p": 1,
