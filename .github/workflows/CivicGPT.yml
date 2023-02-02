@@ -23,7 +23,7 @@ on:
 
 jobs:
   process:
-    name: Summarize Text
+    name: 🎯 Summarize Text
     runs-on: ubuntu-latest
     steps:
 
@@ -62,25 +62,35 @@ jobs:
             PROMPT: "Create a tl;dr of the following text\n\n${TEXT}"
 
  # Create JSON string from variables
-      - name: 🔨Create JSON String
-        run: echo "::create-vars name=prompt_json::$(echo '{\"prompt\":\"$prompty\",\"temperature\":0.7,\"max_tokens\":256,\"top_p\":1,\"frequency_penalty\":0,\"presence_penalty\":0}' | jq -c .)"
+      - name: 🎯Create JSON String
+        run: echo "::create-vars name=prompt_json::$(echo '{$prompty:0}' | jq -c .)"
 
 
 #   Send the curl request
       - name: 🚀Make API Request
         id: api_request
+        uses: fjogeleit/http-request-action@v1
+        with:
+            url: 'https://api.openai.com/v1/completions'
+            method: 'POST'
+            bearerToken: "Bearer ${{ secrets.OPENAI_API_KEY }}"
+            customHeaders: '{"Content-Type": "application/json"}'
+            data: '{
+             "model": "text-davinci-003",
+             "prompt": $PROMPT,
+             "temperature": 0.7,
+             "max_tokens": 256,
+             "top_p": 1,
+             "frequency_penalty": 0,
+             "presence_penalty": 0
+             }'
+
+
+      - name: Show Response
         run: |
-            response=$(curl -X POST https://api.openai.com/v1/completions \
-            -H "Content-Type: application/json" \
-            -H "Authorization: Bearer ${{ secrets.OPENAI_API_KEY }}" \
-            -d "$prompt_json")
-            echo "response: $response"
-
-
-#   Set response as output
-      - name: 🎯Set Output
-        id: set_output
-        run: "::set-output name=response::${{ steps.api_request.outputs.response }}"
+            echo ${{ steps.api_request.outputs.response }}
+#            echo ${{ steps.api_request.outputs.headers }}
+#            echo ${{ fromJson(steps.api_request.outputs.response).field_you_want_to_access }}
 
       - name: 💬Comment on Issue
         uses: actions-cool/issues-helper@v3
@@ -90,7 +100,7 @@ jobs:
             body: Hello ${{ github.event.issue.user.login }},
              Here is your summary
 
-             ${{ steps.set_output.outputs.response }}
+             ${{ steps.api_request.outputs.response }}
             emoji: hooray
             token: ${{ secrets.GH_TOKEN }}
 
