@@ -1,28 +1,105 @@
+#
+#
+#   Based on work by:
+#              -  https://github.com/marketplace/actions/github-issue-forms-body-parser
+#              -  https://github.com/marketplace/actions/issues-helper#get-issue
+#
 name: Issue Forms Body Parser
 
 on:
   workflow_dispatch:
     inputs:
       issue_number:
-        type: string
+        description: 'The issue number to use'
         required: true
-env:
-  GH_TOKEN: ${{ github.token }}
+        type: string
+
+  issues:
 
 jobs:
   process:
     runs-on: ubuntu-latest
     steps:
-      - name: Fetch the issue
-        id: read_issue_body
-        run:
-          echo "body=$(gh issue view ${{ inputs.issue_number }} --repo ${{
-          github.repo }} --json body --jq '.body')" >> $GITHUB_OUTPUT
 
-      - name: Issue Forms Body Parser
+#   Add Cooking Label
+      - name: Add 🧑‍🍳 Cooking Label
+        uses: actions-cool/issues-helper@v3
+        with:
+            actions: 'add-labels'
+            issue-number: ${{ github.event.issue.number }}
+            labels: '🧑‍🍳 Cooking'
+
+#   Reads the incoming issue body
+      - name: 🐶🦴Fetch Issue
+        uses: actions-cool/issues-helper@v3
+        with:
+            actions: 'get-issue'
+            token: ${{ secrets.GITHUB_TOKEN }}
+
+
+
+#   Parse the issue body
+      - name: ➗Parse the Body
         id: parse
         uses: zentered/issue-forms-body-parser@v2.0.0
         with:
           body: ${{ steps.read_issue_body.output.body }}
 
-      - run: echo "${{ JSON.stringify(steps.parse.outputs.data) }}"
+
+# Output from above Parse the Body
+      - name: 🔨Create Variables
+        run: |
+            text=${steps.parse.output.text-to-summarize.text}
+            prompt="CivicActions Security Policy\nCivicActions ha ${text}"
+        env:
+            TEXT: ${steps.parse.output.text-to-summarize.text}
+            PROMPT: "Create a tl;dr of the following text\n\n${TEXT}"
+
+          #   Send the curl request
+      - name: 🚀Make API Request
+        id: api_request
+        run: |
+            response=$(curl -X POST https://api.openai.com/v1/completions \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${{ secrets.OPENAI_API_KEY }}" \
+            -d '{"model": "text-davinci-003","prompt": "$prompt","temperature": 0.7,"max_tokens": 256,"top_p": 1,"frequency_penalty": 0,"presence_penalty": 0}')
+                echo "response: $response"
+
+#   Set response as output
+      - name: 🎯Set Output
+        id: set_output
+        run: echo "::set-output name=response::$response"
+
+      - name: 💬Comment on Issue
+        uses: actions-cool/issues-helper@v3
+        with:
+            actions: 'create-comment'
+            issue-number: ${{ github.event.issue.number }}
+            body: Hello ${{ github.event.issue.user.login }},
+             Here is your summary
+
+             ${{ steps.set_output.outputs.response }}
+            emoji: hooray
+
+      - name: Mark as ✅ Done
+        uses: actions-cool/issues-helper@v3
+        with:
+            actions: 'add-labels'
+            issue-number: ${{ github.event.issue.number }}
+            labels: '✅ Done'
+
+      - name: Stop 🧑‍🍳 Cooking
+        uses: actions-cool/issues-helper@v3
+        with:
+            actions: 'remove-labels'
+            issue-number: ${{ github.event.issue.number }}
+            labels: '🧑‍🍳 Cooking'
+
+      - name: Issue is not 📚 Too Much Text 😁
+        uses: actions-cool/issues-helper@v3
+        with:
+            actions: 'remove-labels'
+            issue-number: ${{ github.event.issue.number }}
+            labels: '📚 Too Much Text'
+
+
