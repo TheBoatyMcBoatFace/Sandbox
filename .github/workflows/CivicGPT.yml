@@ -55,15 +55,16 @@ jobs:
 
 
 # Output from above Parse the Body
-      - name: 🔨Create Variables
-        run: echo "::create-vars name=prompty::$PROMPT"
-        env:
-            TEXT: ${steps.parse.output.text-to-summarize.text}
-            PROMPT: "Create a tl;dr of the following text\n\n${TEXT}"
+#      - name: 🔨Create Variables
+#        run: echo "::create-vars name=prompty::$PROMPT"
+#        env:
+#            TEXT: ${steps.parse.output.text-to-summarize.text}
+#            PROMPT: "Create a tl;dr of the following text\n\n${TEXT}"
 
  # Create JSON string from variables
-      - name: 🎯Create JSON String
-        run: echo "::create-vars name=prompt_json::$(echo '{$prompty:0}' | jq -c .)"
+#      - name: 🎯Create JSON String
+#        run: echo "::create-vars name=prompt_json::$(echo '{$prompty:0}' | jq -c .)"
+
 
 
 #   Send the curl request
@@ -78,7 +79,7 @@ jobs:
             customHeaders: '{"Content-Type": "application/json"}'
             data: '{
              "model": "text-davinci-003",
-             "prompt": $PROMPT,
+             "prompt": "Create a tl;dr of the following text: ${{ steps.parse.output.text-to-summarize.text }},
              "temperature": 0.7,
              "max_tokens": 256,
              "top_p": 1,
