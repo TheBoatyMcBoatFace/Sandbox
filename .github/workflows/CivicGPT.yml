@@ -40,13 +40,12 @@ jobs:
       - name: Issue Forms Body Parserhjk
         id: parse
         uses: zentered/issue-forms-body-parser@v2.0.0
-      - run: echo "${{ JSON.stringify(steps.parse.outputs.data) }}"
 
 # Output from above Parse the Body
       - name: 🔨Create Variables
         run: echo "::create-vars name=prompty::$PROMPT"
         env:
-            TEXT: ${steps.parse.output.text-to-summarize.text}
+            TEXT: ${steps.parse.outputs.data}
             PROMPT: "Create a tl;dr of the following text\n\n${TEXT}"
 
 
