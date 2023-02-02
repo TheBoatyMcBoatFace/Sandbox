@@ -36,6 +36,16 @@ jobs:
             labels: '🧑‍🍳 Cooking'
             token: ${{ secrets.GH_TOKEN }}
 
+
+      - name: Fetch the issue
+        id: read_issue_body
+        run:
+            echo "body=$(gh issue view ${{ github.event.issue.number }} --repo ${{ github.repository }} --json body --jq '.body')" >> $Fetchy
+
+
+      - name: String Dat
+        run: echo "${{ JSON.stringify($Fetchy) }}"
+
 #   Reads the incoming issue body
       - name: 🐶🦴Fetch Issue
         id: read_issue_body
@@ -79,7 +89,7 @@ jobs:
             customHeaders: '{"Content-Type": "application/json"}'
             data: '{
              "model": "text-davinci-003",
-             "prompt": "Create a tl;dr of the following text: ${steps.parse.output.text-to-summarize.text}",
+             "prompt": "Please create a tl;dr of this text: ${TEXT}",
              "temperature": 0.7,
              "max_tokens": 256,
              "top_p": 1,
