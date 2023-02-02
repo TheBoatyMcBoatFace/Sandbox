@@ -73,8 +73,7 @@ jobs:
         with:
             url: 'https://api.openai.com/v1/completions'
             method: 'POST'
-            bearerToken: ${{ secrets.OPENAI_API_KEY }}
-            customHeaders: '{"Content-Type": "application/json"}'
+            customHeaders: '{"Content-Type": "application/json", "Authorization": "Bearer: ${{ secrets.OPENAI_API_KEY }}"}'
             data: '{
              "model": "text-davinci-003",
              "prompt": $PROMPT,
