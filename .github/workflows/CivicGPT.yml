@@ -37,32 +37,10 @@ jobs:
             token: ${{ secrets.GH_TOKEN }}
 
 
-      - name: Fetch the issue
-        id: read_issue_body
-        run:
-            echo "body=$(gh issue view ${{ github.event.issue.number }} --repo ${{ github.repository }} --json body --jq '.body')" >> $Fetchy
-
-
-      - name: String Dat
-        run: echo "${{ JSON.stringify($Fetchy) }}"
-
-#   Reads the incoming issue body
-      - name: 🐶🦴Fetch Issue
-        id: read_issue_body
-        uses: actions-cool/issues-helper@v3
-        with:
-            actions: 'get-issue'
-            token: ${{ secrets.GH_TOKEN }}
-
-
-#   Parse the issue body
-      - name: ➗Parse the Body
+      - name: Issue Forms Body Parserhjk
         id: parse
         uses: zentered/issue-forms-body-parser@v2.0.0
-        with:
-          body: ${{ steps.read_issue_body.output.issue-body }}
-          token: ${{ secrets.GH_TOKEN }}
-
+      - run: echo "${{ JSON.stringify(steps.parse.outputs.data) }}"
 
 # Output from above Parse the Body
       - name: 🔨Create Variables
@@ -70,10 +48,6 @@ jobs:
         env:
             TEXT: ${steps.parse.output.text-to-summarize.text}
             PROMPT: "Create a tl;dr of the following text\n\n${TEXT}"
-
- # Create JSON string from variables
-#      - name: 🎯Create JSON String
-#        run: echo "::create-vars name=prompt_json::$(echo '{$prompty:0}' | jq -c .)"
 
 
 
