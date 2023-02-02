@@ -1,0 +1,11 @@
+name: 🛠️ Summarize Text
+description: Used to assign tasks or responsibilities to specific team members, such as code reviews, testing, or deployment.
+title: "<Title of Task>"
+labels: [🤔 Unrefined, 📚 Too Much Text]
+body:
+- type: textarea
+  attributes:
+      label: Text To Summarize
+      description: A concise description of what needs to be done
+  validations:
+      required: true
