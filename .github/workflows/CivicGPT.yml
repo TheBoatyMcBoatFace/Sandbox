@@ -16,6 +16,9 @@ on:
 
   issues:
 
+
+
+
 jobs:
   process:
     runs-on: ubuntu-latest
@@ -31,26 +34,22 @@ jobs:
 
 #   Reads the incoming issue body
       - name: 🐶🦴Fetch Issue
+        id: read_issue_body
         uses: actions-cool/issues-helper@v3
         with:
             actions: 'get-issue'
-            token: ${{ secrets.GITHUB_TOKEN }}
-
-
 
 #   Parse the issue body
       - name: ➗Parse the Body
         id: parse
         uses: zentered/issue-forms-body-parser@v2.0.0
         with:
-          body: ${{ steps.read_issue_body.output.body }}
+          body: ${{ steps.read_issue_body.output.issue-body }}
 
 
 # Output from above Parse the Body
       - name: 🔨Create Variables
-        run: |
-            text=${steps.parse.output.text-to-summarize.text}
-            prompt="CivicActions Security Policy\nCivicActions ha ${text}"
+        run: echo "::create-vars name=prompty::$PROMPT"
         env:
             TEXT: ${steps.parse.output.text-to-summarize.text}
             PROMPT: "Create a tl;dr of the following text\n\n${TEXT}"
@@ -62,8 +61,9 @@ jobs:
             response=$(curl -X POST https://api.openai.com/v1/completions \
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer ${{ secrets.OPENAI_API_KEY }}" \
-            -d '{"model": "text-davinci-003","prompt": "$prompt","temperature": 0.7,"max_tokens": 256,"top_p": 1,"frequency_penalty": 0,"presence_penalty": 0}')
+            -d '{"model": "text-davinci-003","prompt": "$prompty","temperature": 0.7,"max_tokens": 256,"top_p": 1,"frequency_penalty": 0,"presence_penalty": 0}')
                 echo "response: $response"
+
 
 #   Set response as output
       - name: 🎯Set Output
