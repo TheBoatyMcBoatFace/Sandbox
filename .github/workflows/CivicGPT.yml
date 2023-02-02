@@ -31,6 +31,7 @@ jobs:
             actions: 'add-labels'
             issue-number: ${{ github.event.issue.number }}
             labels: '🧑‍🍳 Cooking'
+            token: ${{ secrets.GH_TOKEN }}
 
 #   Reads the incoming issue body
       - name: 🐶🦴Fetch Issue
@@ -38,6 +39,8 @@ jobs:
         uses: actions-cool/issues-helper@v3
         with:
             actions: 'get-issue'
+            token: ${{ secrets.GH_TOKEN }}
+
 
 #   Parse the issue body
       - name: ➗Parse the Body
@@ -45,6 +48,7 @@ jobs:
         uses: zentered/issue-forms-body-parser@v2.0.0
         with:
           body: ${{ steps.read_issue_body.output.issue-body }}
+          token: ${{ secrets.GH_TOKEN }}
 
 
 # Output from above Parse the Body
@@ -53,6 +57,7 @@ jobs:
         env:
             TEXT: ${steps.parse.output.text-to-summarize.text}
             PROMPT: "Create a tl;dr of the following text\n\n${TEXT}"
+
 
           #   Send the curl request
       - name: 🚀Make API Request
@@ -80,6 +85,7 @@ jobs:
 
              ${{ steps.set_output.outputs.response }}
             emoji: hooray
+            token: ${{ secrets.GH_TOKEN }}
 
       - name: Mark as ✅ Done
         uses: actions-cool/issues-helper@v3
@@ -94,6 +100,7 @@ jobs:
             actions: 'remove-labels'
             issue-number: ${{ github.event.issue.number }}
             labels: '🧑‍🍳 Cooking'
+            token: ${{ secrets.GH_TOKEN }}
 
       - name: Issue is not 📚 Too Much Text 😁
         uses: actions-cool/issues-helper@v3
@@ -101,5 +108,6 @@ jobs:
             actions: 'remove-labels'
             issue-number: ${{ github.event.issue.number }}
             labels: '📚 Too Much Text'
+            token: ${{ secrets.GH_TOKEN }}
 
 
