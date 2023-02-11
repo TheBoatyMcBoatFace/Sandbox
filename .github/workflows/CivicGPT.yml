@@ -52,10 +52,10 @@ jobs:
           actions: 'get-issue'
           token: ${{ secrets.GH_TOKEN }}
 
-      - name: Set Body Content
-        id: set-body-content
-        run: |
-            echo "BODY_CONTENT=Tacos for lunch" >> $GITHUB_ENV
+#      - name: Set Body Content
+ #       id: set-body-content
+ #       run: |
+  #          echo "BODY_CONTENT=Tacos for lunch" >> $GITHUB_ENV
  #           echo "::set-env name=BODY_CONTENT::${{ steps.get-issue.outputs.issue-body }}"
 #${{ toJson(steps.get-issue.outputs.issue-body) }}
 
@@ -106,6 +106,8 @@ jobs:
              "frequency_penalty": 0,
              "presence_penalty": 0
              }'
+            BODY_CONTENT:  ${{ steps.get-issue.outputs.issue-body }}
+
 
 
       - name: Show Response
