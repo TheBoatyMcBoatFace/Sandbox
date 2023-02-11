@@ -91,7 +91,7 @@ jobs:
         run: |
             echo ${{ steps.api_request.outputs.response }}
 #            echo ${{ steps.api_request.outputs.headers }}
-#            echo ${{ fromJson(steps.api_request.outputs.response).field_you_want_to_access }}
+#            echo ${{ fromJson(steps.api_request.outputs.response).choices.text }}
 
       - name: 💬Comment on Issue
         uses: actions-cool/issues-helper@v3
@@ -128,5 +128,12 @@ jobs:
             issue-number: ${{ github.event.issue.number }}
             labels: '📚 Too Much Text'
             token: ${{ secrets.GH_TOKEN }}
+
+      - name: Close Issue
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: 'close-issue'
+          token: ${{ secrets.GH_TOKEN }}
+          issue-number: ${{ github.event.issue.number }}
 
 
