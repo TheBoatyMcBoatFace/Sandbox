@@ -38,30 +38,41 @@ jobs:
 
 
 
-#   Reads the incoming issue body
-      - name: 🐶🦴Fetch Issue
-        id: read_issue_body
+      - name: Get Issue
+        id: get-issue
         uses: actions-cool/issues-helper@v3
         with:
-            actions: 'get-issue'
-            token: ${{ secrets.GH_TOKEN }}
+          actions: 'get-issue'
+          token: ${{ secrets.GH_TOKEN }}
+
+
+
+
+
+#   Reads the incoming issue body
+#      - name: 🐶🦴Fetch Issue
+#        id: read_issue_body
+#        uses: actions-cool/issues-helper@v3
+#        with:
+#            actions: 'get-issue'
+#            token: ${{ secrets.GH_TOKEN }}
 
 
             #   Parse the issue body
-      - name: ➗Parse the Body
-        id: parse
-        uses: zentered/issue-forms-body-parser@v2.0.0
-        with:
-            body: ${{ steps.read_issue_body.output.issue-body }}
-            token: ${{ secrets.GH_TOKEN }}
+#      - name: ➗Parse the Body
+#        id: parse
+#        uses: zentered/issue-forms-body-parser@v2.0.0
+#        with:
+#            body: ${{ steps.read_issue_body.output.issue-body }}
+#            token: ${{ secrets.GH_TOKEN }}
 
 
 # Output from above Parse the Body
-      - name: 🔨Create Variables
-        run: echo "::create-vars name=prompty::$PROMPT"
-        env:
-            TEXT: ${steps.parse.outputs.data}
-            PROMPT: "Create a tl;dr of the following text\n\n${TEXT}"
+#      - name: 🔨Create Variables
+ #       run: echo "::create-vars name=prompty::$PROMPT"
+#        env:
+#            TEXT: ${steps.parse.outputs.data}
+#            PROMPT: "Create a tl;dr of the following text\n\n${{ steps.read_issue_body.output.issue-body }}"
 
 
 
@@ -78,7 +89,7 @@ jobs:
             customHeaders: '{"Content-Type": "application/json"}'
             data: '{
              "model": "text-davinci-003",
-             "prompt": "Please create a tl;dr of this text: ${TEXT}",
+             "prompt": "Please create a tl;dr of this text: ${{ steps.get-issue.outputs.issue-body }}",
              "temperature": 0.7,
              "max_tokens": 256,
              "top_p": 1,
