@@ -55,7 +55,7 @@ jobs:
       - name: Set Body Content
         id: set-body-content
         run: |
-            echo "BODY_CONTENT=${{ steps.get-issue.outputs.issue-body }}" >> $GITHUB_ENV
+            echo "BODY_CONTENT=${{ toJson(steps.get-issue.outputs.issue-body) }}" >> $GITHUB_ENV
  #           echo "::set-env name=BODY_CONTENT::${{ steps.get-issue.outputs.issue-body }}"
 
 
@@ -99,7 +99,7 @@ jobs:
             customHeaders: '{"Content-Type": "application/json"}'
             data: '{
              "model": "text-davinci-003",
-             "prompt": "Please create a tl;dr of this text: ${{ vars.BODY_CONTENT }}",
+             "prompt": "${{ vars.body-content }}",
              "temperature": 0.7,
              "max_tokens": 256,
              "top_p": 1,
